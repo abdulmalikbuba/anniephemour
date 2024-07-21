@@ -1,0 +1,11 @@
+---
+Name: anniephemour-extensions
+---
+
+SilverStripe\SiteConfig\SiteConfig:
+  extensions:
+    - SiteConfigExtension
+
+SilverStripe\Security\Member:
+  extensions:
+    - MemberExtension

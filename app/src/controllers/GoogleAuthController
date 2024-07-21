@@ -1,0 +1,75 @@
+<?php
+
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Security\IdentityStore;
+use SilverStripe\Security\Member;
+use League\OAuth2\Client\Provider\Google; 
+use Exception;
+
+class GoogleAuthController extends Controller
+{
+    private static $allowed_actions = ['login', 'callback'];
+
+    private $provider;
+
+    protected function init()
+    {
+        parent::init();
+
+        $this->provider = new Google([
+            'clientId'     => 'YOUR_GOOGLE_CLIENT_ID',
+            'clientSecret' => 'YOUR_GOOGLE_CLIENT_SECRET',
+            'redirectUri'  => 'YOUR_REDIRECT_URI'
+        ]);
+    }
+
+    public function login()
+    {
+        $authUrl = $this->provider->getAuthorizationUrl();
+        $this->getRequest()->getSession()->set('oauth2state', $this->provider->getState());
+
+        return $this->redirect($authUrl);
+    }
+
+    public function callback(HTTPRequest $request)
+    {
+        $session = $request->getSession();
+        $state = $session->get('oauth2state');
+
+        if (!$request->getVar('state') || ($state !== $request->getVar('state'))) {
+            $session->clear('oauth2state');
+            return $this->httpError(400, 'Invalid state');
+        }
+
+        $token = $this->provider->getAccessToken('authorization_code', [
+            'code' => $request->getVar('code')
+        ]);
+
+        try {
+            $owner = $this->provider->getResourceOwner($token);
+            $googleUser = $owner->toArray();
+
+            // Check if the user exists
+            $member = Member::get()->filter('Email', $googleUser['email'])->first();
+
+            if (!$member) {
+                // Create a new member if one doesn't exist
+                $member = Member::create();
+                $member->FirstName = $googleUser['given_name'];
+                $member->Surname = $googleUser['family_name'];
+                $member->Email = $googleUser['email'];
+                $member->write();
+            }
+
+            // Log in the member
+            $identityStore = Injector::inst()->get(IdentityStore::class);
+            $identityStore->logIn($member, false, $request);
+
+            return $this->redirect('home');
+        } catch (Exception $e) {
+            return $this->httpError(400, 'Failed to get user details');
+        }
+    }
+}

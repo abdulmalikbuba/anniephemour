@@ -1,0 +1,77 @@
+<?php
+
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Security\Security;
+use SilverStripe\Core\Injector\Injector;
+use Paystack;
+
+class PaymentController extends Controller
+{
+    private static $allowed_actions = [
+        'initiatePayment',
+        'handleCallback',
+    ];
+
+    public function initiatePayment(HTTPRequest $request)
+    {
+        // Fetch payment details and initialize Paystack transaction
+        $amount = $request->getVar('amount'); // Example: Get amount from request
+        $user = Security::getCurrentUser(); // Assuming user is logged in
+
+        $paystackConfig = $this->getPaystackConfig();
+        $paystack = new Paystack($paystackConfig['SecretKey']);
+
+        $response = $paystack->transaction->initialize([
+            'amount' => $amount,
+            'email' => $user->Email,
+            'callback_url' => $paystackConfig['CallbackURL'],
+        ]);
+
+        // Handle response and redirect user to Paystack payment page
+        if ($response['status']) {
+            return $this->redirect($response['data']['authorization_url']);
+        } else {
+            // Handle error
+            return $this->httpError(500, 'Failed to initialize payment: ' . $response['message']);
+        }
+    }
+
+    public function handleCallback(HTTPRequest $request)
+    {
+        // Process Paystack callback to confirm payment status
+        $reference = $request->getVar('reference'); // Example: Get reference from callback
+
+        $paystackConfig = $this->getPaystackConfig();
+        $paystack = new Paystack($paystackConfig['SecretKey']);
+
+        $response = $paystack->transaction->verify([
+            'reference' => $reference,
+        ]);
+
+        if ($response['status']) {
+            // Payment verified successfully, update payment status in your system
+            // Example: Update Payment record status to 'Paid'
+            $payment = Payment::get()->filter('TransactionID', $reference)->first();
+            if ($payment) {
+                $payment->Status = 'Paid';
+                $payment->write();
+            }
+
+            // Redirect or display success message to user
+            return $this->redirect('/payment/success');
+        } else {
+            // Handle payment verification failure
+            return $this->redirect('/payment/error');
+        }
+    }
+
+    private function getPaystackConfig()
+    {
+        return [
+            'PublicKey' => 'YOUR_PUBLIC_KEY',
+            'SecretKey' => 'YOUR_SECRET_KEY',
+            // 'CallbackURL' => 'https://yourdomain.com/paystack/callback',
+        ];
+    }
+}
