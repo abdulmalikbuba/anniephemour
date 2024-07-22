@@ -1,12 +1,21 @@
 <?php
 
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\ORM\PaginatedList;
+
 class BookPageController extends PageController
 {
     private static $allowed_actions = [];
 
-    public function getBooks()
+    public function index(HTTPRequest $request)
     {
-        return Book::get();
+        $books = Book::get()->sort('Created','ASC');
+
+        $pagination = new PaginatedList($books, $request);
+
+        return $this->customise([
+            'Books' => $pagination->setPageLength(8),
+        ]);
     }
 
     public function getSessionMessage()

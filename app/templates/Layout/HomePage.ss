@@ -93,13 +93,15 @@
                                         </div>
                                     </div>
                                 </div>
+                                <% if $Price %>
                                 <div class="modal-footer">
                                     <form action="cart/addToCart" method="POST">
                                         <input type="hidden" name="BookID" value="$ID">
-                                        <button type="submit" class="btn btn-secondary">Add to Cart</button>
+                                        <button type="submit" class="btn btn-warning">Add to Cart<i class="bi ms-2 bi-cart-fill"></i></button>
                                     </form>
-                                    <a href="#!" class="btn btn-warning">Buy Now</a>
+                                    <%-- <a href="#!" class="btn btn-warning">Buy Now</a> --%>
                                 </div>
+                                <% end_if %>
                             </div>
                         </div>
                     </div>

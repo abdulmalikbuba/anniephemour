@@ -30,9 +30,17 @@
 			<li class="nav-item">
 			<a class="nav-link" href="contact-us">Contact Us</a>
 			</li>
-			
+
+
+			<li class="nav-item user-b">
+				<% if $CurrentUser %>
+					<a class="rounded-0 btn btn-sm ms-3 mb-1 user-btn" data-bs-toggle="modal" data-bs-target="#login"><i class="bi fs-4 bi-person"></i></a>
+				<% else %>
+					<a class="rounded-0 btn btn-warning" data-bs-toggle="modal" data-bs-target="#login">Login</a>
+				<% end_if %>
+			</li>
 			<% if $CurrentUser %>
-				<li class="nav-item ms-5">
+				<li class="nav-item ">
 					<a class="btn btn-sm mb-1 position-relative" href="cart">
 						<i class="bi fs-4 bi-cart-check"></i>
 						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -43,13 +51,7 @@
 				</li>
 			<% end_if %>
 
-			<li class="nav-item">
-				<% if $CurrentUser %>
-					<a class="rounded-0 btn btn-sm ms-3 mb-1 user-btn" data-bs-toggle="modal" data-bs-target="#login"><i class="bi fs-4 bi-person"></i></a>
-				<% else %>
-					<a class="rounded-0 btn btn-warning" data-bs-toggle="modal" data-bs-target="#login">Login</a>
-				<% end_if %>
-			</li>
+			
 		</ul>
 		</div>
 	</div>

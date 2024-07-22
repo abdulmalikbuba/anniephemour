@@ -14,8 +14,8 @@
     <div class="container mt-5">
 
     <div class="row">
-        <% if $getBooks %>
-        <% loop $getBooks %>
+        <% if $Books %>
+        <% loop $Books %>
         <div class="col-lg-3 col-md-6 mx-auto">
             <div class="book-single wow fadeInUp">
                 <a href="#!" data-bs-toggle="modal" data-bs-target="#bookModal-$ID">
@@ -34,7 +34,7 @@
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Book</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">$Title</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -49,7 +49,6 @@
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12">
                         <div class="des">
-                            <h4>$Title</h4>
                             <p>$Description</p>
                             <h5 class="price">GHC $Price</h5>
                         </div>
@@ -57,13 +56,15 @@
                     </div>
                     </div>
                 </div>
+                <% if $Price %>
                 <div class="modal-footer">
                     <form action="cart/addToCart" method="POST">
                         <input type="hidden" name="BookID" value="$ID">
-                        <button type="submit" class="btn btn-outline-secondary">Add to Cart <i class="bi ms-2 bi-cart-fill"></i></button>
+                        <button type="submit" class="btn btn-outline-warning">Add to Cart <i class="bi ms-2 bi-cart-fill"></i></button>
                     </form>
-                    <a href="cart/purchase" class="btn btn-warning">Buy Now</a>
+                    <%-- <a href="cart/purchase" class="btn btn-warning">Buy Now</a> --%>
                 </div>
+                <% end_if %>
                 </div>
             </div>
             </div>
