@@ -1,0 +1,11 @@
+SilverStripe\Admin\LeftAndMain:
+  cms_background: '#1d48a0'
+  cms_border_color: '#173778'
+  cms_color: '#fff'
+  cms_hover_background: 'inherit'
+  cms_hover_color: currentColor
+  cms_active_background: '#173778'
+  cms_active_color: currentColor
+  cms_drawer_background: '#1a3e88'
+  cms_drawer_color: currentColor
+  cms_icon_color: currentColor

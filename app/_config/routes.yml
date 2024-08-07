@@ -4,7 +4,7 @@ After: framework/_config/routes#coreroutes
 ---
 SilverStripe\Control\Director:
   rules:
-    'cart': 'CartController'
+    'cart//$Action/$ID': 'CartController'
     'cart/viewCart': 'CartController/viewCart'
     'cart/add': 'CartController/add'
     'cart/remove': 'CartController/remove'

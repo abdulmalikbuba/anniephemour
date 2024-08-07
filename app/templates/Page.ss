@@ -23,9 +23,11 @@
                 </div>
                 <div class="modal-body">
                     <% if $CurrentUser %>
-                        <p class="">You're logged in as $CurrentUser.FirstName</p>
-                        <p class="">Do you wish to logout?</p>
-                        <a href="$Link('logout')" class="btn btn-secondary">Logout</a>
+                        <div class="text-center">
+                            <p class="">You're logged in as $CurrentUser.FirstName $CurrentUser.Surname</p>
+                            <p class="">Do you wish to logout?</p>
+                            <a href="$Link('logout')" class="btn btn-secondary">Logout</a>
+                        </div>
                     <% else %>
                         <form method="POST" action="$Link('login')">
                             <div class="mb-3">

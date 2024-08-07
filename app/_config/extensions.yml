@@ -9,3 +9,11 @@ SilverStripe\SiteConfig\SiteConfig:
 SilverStripe\Security\Member:
   extensions:
     - MemberExtension
+
+SilverStripe\Admin\LeftAndMain:
+  extensions:
+    - CMSBrandingExtension
+
+SilverStripe\Admin\ModelAdmin:
+  extensions:
+    - CMSBrandingExtension

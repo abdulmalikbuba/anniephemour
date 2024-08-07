@@ -14,7 +14,7 @@ class BookPageController extends PageController
         $pagination = new PaginatedList($books, $request);
 
         return $this->customise([
-            'Books' => $pagination->setPageLength(8),
+            'Books' => $pagination->setPageLength(12),
         ]);
     }
 

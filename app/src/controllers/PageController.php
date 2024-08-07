@@ -49,12 +49,14 @@ namespace {
             Requirements::css('https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css');
             Requirements::css('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css');
             Requirements::css($ThemeDir . 'css/lib/animate/animate.min.css');
+            Requirements::css($ThemeDir . 'css/lib/lightbox/css/lightbox.min.css');
             Requirements::css('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200..900;1,200..900&display=swap');
 
             Requirements::javascript('https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js');
             Requirements::javascript('https://code.jquery.com/jquery-3.4.1.min.js');
             Requirements::javascript($ThemeDir . 'css/lib/easing/easing.min.js');
             Requirements::javascript($ThemeDir . 'css/lib/wow/wow.min.js');
+            Requirements::javascript($ThemeDir . 'css/lib/lightbox/js/lightbox.min.js');
 
             Requirements::customScript(<<<JS
                 new WOW().init();

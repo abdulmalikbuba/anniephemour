@@ -18,17 +18,17 @@ class SiteConfigExtension extends DataExtension
     ];
 
     private static $has_one = [
-        'FrontEndBranding' => Image::class
+        'FrontEndBranding' => Image::class,
+        'FooterBranding' => Image::class
     ];
 
     private static $owns = [
         'FrontEndBranding',
-        'FooterBranding',
+        'FooterBranding', 
     ];
 
     public function updateCMSFields(FieldList $fields)
     {
-
         $fields->addFieldsToTab('Root.SocialMedia', array(
             TextField::create('FacebookLink', 'Facebook'),
             TextField::create('InstagramLink', 'Instagram'),
@@ -41,22 +41,13 @@ class SiteConfigExtension extends DataExtension
             TextField::create('PhoneNumber','Phone Number'),
         ));
 
-
         $fields->addFieldToTab('Root.FrontEndBranding', $upload = UploadField::create('FrontEndBranding', 'Logo'));
-
-        // $upload->getValidator()->setAllowedExtensions(array(
-        //     'png', 'jpeg', 'jpg', 'gif'
-        // ));
-
         $upload->setFolderName('front-end-logo');
 
-
-        $fields->addFieldToTab('Root.FooterBranding', $FooterBranding = UploadField::create('FooterBranding', 'Logo'));
-
-        $FooterBranding->getValidator()->setAllowedExtensions(array(
+        $fields->addFieldToTab('Root.FooterBranding', $footerBranding = UploadField::create('FooterBranding', 'Footer Logo'));
+        $footerBranding->getValidator()->setAllowedExtensions(array(
             'png', 'jpeg', 'jpg', 'gif'
         ));
-
-        $FooterBranding->setFolderName('Footer-logo');
+        $footerBranding->setFolderName('footer-logo');
     }
 }

@@ -7,6 +7,9 @@ use SilverStripe\Control\Controller;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\View\Requirements;
+use SilverStripe\Core\Config\Config;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 
 class CartController extends PageController
 {
@@ -14,7 +17,9 @@ class CartController extends PageController
         'addToCart',
         'removeFromCart',
         'updateQuantity',
-        'purchase'
+        'purchase',
+        'pay',
+        'callback'
     ];
 
 
@@ -178,82 +183,7 @@ class CartController extends PageController
         return $this->redirectBack();
     }
 
-    // public function purchase(HTTPRequest $request)
-    // {
-    //     $member = Security::getCurrentUser();
-    //     if (!$member) {
-    //         $this->setSessionMessage('You must be logged in to purchase items!', 'danger');
-    //         return $this->redirectBack();
-    //     }
-
-    //     $bookID = $request->postVar('BookID');
-    //     if ($bookID) {
-    //         // Single book purchase
-    //         $book = Book::get()->byID($bookID);
-    //         if (!$book) {
-    //             $this->setSessionMessage('Book not found!', 'danger');
-    //             return $this->redirectBack();
-    //         }
-
-    //         // Create a new cart for the single purchase
-    //         $cart = Cart::create(['MemberID' => $member->ID]);
-    //         $cart->write();
-
-    //         // Add the book to the cart
-    //         $cartItem = CartItem::create([
-    //             'BookID' => $bookID,
-    //             'Quantity' => 1,
-    //             'TotalPrice' => $book->Price,
-    //             'CartID' => $cart->ID
-    //         ]);
-    //         $cartItem->write();
-
-    //         // Here you would typically handle the payment and order processing logic
-    //         // For example, create an Order record, send confirmation email, etc.
-    //         // Assuming a simplified payment process:
-    //         $payment = Payment::create([
-    //             'MemberID' => $member->ID,
-    //             'Amount' => $cartItem->TotalPrice,
-    //             'Status' => 'Completed'
-    //         ]);
-    //         $payment->write();
-
-    //         // After successful payment, clear the cart
-    //         $cart->delete();
-    //     } else {
-    //         // Regular cart purchase
-    //         $cart = $this->getCart();
-    //         if (!$cart || !$cart->CartItems()->exists()) {
-    //             $this->setSessionMessage('Your cart is empty!', 'danger');
-    //             return $this->redirectBack();
-    //         }
-
-    //         // Calculate total price
-    //         $totalPrice = 0;
-    //         foreach ($cart->CartItems() as $item) {
-    //             $totalPrice += $item->TotalPrice;
-    //         }
-
-    //         // Here you would typically handle the payment and order processing logic
-    //         // For example, create an Order record, send confirmation email, etc.
-    //         // Assuming a simplified payment process:
-    //         $payment = Payment::create([
-    //             'MemberID' => $member->ID,
-    //             'Amount' => $totalPrice,
-    //             'Status' => 'Completed'
-    //         ]);
-    //         $payment->write();
-
-    //         // After successful payment, clear the cart
-    //         $cart->CartItems()->removeAll();
-    //         $cart->delete();
-    //     }
-
-    //     // Assume payment and order processing are successful
-    //     $this->setSessionMessage('Purchase completed successfully!', 'success');
-    //     return $this->redirectBack();
-    // }
-
+    
     public function purchase()
     {
         $member = Security::getCurrentUser();
@@ -294,14 +224,143 @@ class CartController extends PageController
 
         $payment->write();
 
-        // Clear the cart after purchase
-        $cart->CartItems()->removeAll();
-        $cart->delete();
-
-        $this->setSessionMessage('Purchase completed successfully!', 'success');
-        return $this->redirectBack();
+        // Redirect to Paystack payment page
+        return $this->redirect($this->Link('pay/' . $payment->ID));
     }
 
+    public function pay($request)
+    {
+        $paymentID = $request->param('ID');
+        $payment = Payment::get()->byID($paymentID);
+
+        if (!$payment) {
+            $this->setSessionMessage('Payment not found!', 'danger');
+            return $this->redirectBack();
+        }
+
+        $publicKey = Config::inst()->get('Paystack', 'public_key');
+        $callbackUrl = $this->Link('callback');
+        $amount = $payment->Amount * 100; // Convert to kobo
+        $email = Security::getCurrentUser()->Email;
+
+        return $this->customise([
+            'PublicKey' => $publicKey,
+            'CallbackUrl' => $callbackUrl,
+            'Amount' => $amount,
+            'Email' => $email,
+            'Reference' => $payment->ID
+        ])->renderWith('PaystackPayment');
+    }
+
+    // public function callback(HTTPRequest $request)
+    // {
+    //     $reference = $request->getVar('reference');
+    //     $payment = Payment::get()->byID($reference);
+
+    //     if (!$payment) {
+    //         $this->setSessionMessage('Payment not found!', 'danger');
+    //         return $this->redirect('http://localhost/book/');
+    //     }
+
+    //     $secretKey = Config::inst()->get('Paystack', 'secret_key');
+
+    //     $ch = curl_init();
+    //     curl_setopt($ch, CURLOPT_URL, "https://api.paystack.co/transaction/verify/{$reference}");
+    //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    //     curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    //         "Authorization: Bearer $secretKey"
+    //     ]);
+    //     $response = curl_exec($ch);
+    //     $error = curl_error($ch); // Capture cURL errors
+    //     curl_close($ch);
+
+    //     if ($error) {
+    //         // Log or display cURL error
+    //         $this->setSessionMessage('cURL error: ' . $error, 'danger');
+    //         return $this->redirect('http://localhost/book/');
+    //     }
+
+    //     $result = json_decode($response);
+
+    //     if (isset($result->status) && $result->status && isset($result->data->status) && $result->data->status == 'success') {
+    //         // Payment was successful, update the payment and order status
+    //         $payment->Status = 'Paid';
+    //         $payment->write();
+
+    //         $order = $payment->Order();
+    //         if ($order) {
+    //             $order->Status = 'Paid';
+    //             $order->write();
+    //         }
+
+    //         // Clear the cart after successful payment
+    //         $cart = $this->getCart();
+    //         if ($cart && $cart->CartItems()->exists()) {
+    //             $cart->CartItems()->removeAll();
+    //             $cart->delete();
+    //         }
+
+    //         $this->setSessionMessage('Payment successful!', 'success');
+    //         return $this->redirect('http://localhost/book/');
+    //     } else {
+    //         // Log the full response to debug the issue
+    //         $this->setSessionMessage('Payment failed: ' . json_encode($result), 'danger');
+    //         return $this->redirect('http://localhost/book/');
+    //     }
+    // }
+
+    public function callback(HTTPRequest $request)
+    {
+        $reference = $request->getVar('reference');
+        $payment = Payment::get()->byID($reference);
+
+        if (!$payment) {
+            $this->setSessionMessage('Payment not found!', 'danger');
+            return $this->redirect('http://localhost/book/');
+        }
+
+        $secretKey = Config::inst()->get('Paystack', 'secret_key');
+        $client = new Client();
+
+        try {
+            $response = $client->request('GET', "https://api.paystack.co/transaction/verify/{$reference}", [
+                'headers' => [
+                    'Authorization' => "Bearer $secretKey"
+                ],
+                'verify' => true // Optional, for SSL certificate verification
+            ]);
+
+            $result = json_decode($response->getBody());
+
+            if ($result->status && $result->data->status == 'success') {
+                // Payment was successful, update the payment and order status
+                $payment->Status = 'Paid';
+                $payment->write();
+
+                $order = $payment->Order();
+                if ($order) {
+                    $order->Status = 'Paid';
+                    $order->write();
+                }
+
+                // Clear the cart after successful payment
+                $cart = $this->getCart();
+                if ($cart && $cart->CartItems()->exists()) {
+                    $cart->CartItems()->removeAll();
+                    $cart->delete();
+                }
+
+                $this->setSessionMessage('Payment successful!', 'success');
+                return $this->redirect('http://localhost/book/');
+            } else {
+                $this->setSessionMessage('Payment failed: ' . $result->data->gateway_response, 'danger');
+                return $this->redirect('http://localhost/book/');
+            }
+        } catch (RequestException $e) {
+            $this->setSessionMessage('Payment failed: ' . $e->getMessage(), 'danger');
+            return $this->redirect('http://localhost/book/');
+        }
+    }
 
 
     private function setSessionMessage($message, $type = 'success')

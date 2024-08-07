@@ -11,7 +11,8 @@
         "silverstripe/login-forms": "~5.2.0@stable",
         "ryanpotter/silverstripe-cms-theme": "dev-master",
         "league/oauth2-client": "^2.7",
-        "league/oauth2-google": "^4.0"
+        "league/oauth2-google": "^4.0",
+        "guzzlehttp/guzzle": "^7.9"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.6"

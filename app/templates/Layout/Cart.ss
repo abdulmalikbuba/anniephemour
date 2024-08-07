@@ -89,6 +89,7 @@
         <a href="books" class="btn btn-outline-secondary me-md-2">Continue Shopping</a>
         <% if $Cart.CartItems %>
             <a href="cart/purchase" class="btn btn-warning">Proceed To Payment</a>
+            <%-- <button class="btn btn-warning proceed-to-payment-btn">Proceed To Payment</button> --%>
         <% end_if %>
       </div>
 

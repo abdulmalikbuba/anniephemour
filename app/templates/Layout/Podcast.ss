@@ -14,5 +14,19 @@
     </div>
     </div>
 
+    <div class="container">
+    <% loop $Episodes %>
+    <div class="podcast-episode">
+        <h3>$Title</h3>
+        <p>$ReleaseDate.Nice</p>
+        <p>$Description</p>
+        <audio controls>
+            <source src="$AudioFile.URL" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+    <% end_loop %>
+    </div>
+
 </div>
 <!-- main -->

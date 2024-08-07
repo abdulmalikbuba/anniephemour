@@ -111,7 +111,7 @@
 
         <% if $FeaturedBooks %>
         <div class="see-more wow zoomIn" data-wow-delay="0.6s">
-            <a href="books/" class="btn btn-warning">More Books</a>
+            <a href="books/" class="btn btn-warning rounded-0">More Books</a>
         </div>
         <% end_if %>
     </div>

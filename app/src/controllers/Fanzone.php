@@ -2,8 +2,12 @@
 
 class FanzoneController extends PageController
 {
-    public function init() {
-        parent::init();
-        // Additional initialization code can go here
+    public function index()
+    {
+        $photos = FanzonePhotos::get()->sort('Created','ASC');
+
+        return $this->customise([
+            'Photos' => $photos,
+        ]);
     }
 }

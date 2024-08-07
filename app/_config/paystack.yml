@@ -1,0 +1,6 @@
+---
+Name: paystackconfig
+---
+Paystack:
+  public_key: 'pk_live_a7ac8ce0f2e2d018b05f4e751bcf872faaf4622d'
+  secret_key: 'sk_live_3de13743cbd96065d5dfa43461c410187562766c'

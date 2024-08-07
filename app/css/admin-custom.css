@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200..900;1,200..900&display=swap');
+
+body {
+    font-weight: 500 !important;
+    font-family: "Montserrat", sans-serif !important;
+    font-optical-sizing: auto !important;
+    font-style: normal !important;
+}
+
+/* General CMS styles */
+/* .cms-content {
+    background-color: #1d48a0;
+    color: #fff;
+} */
+
+/* Sidebar menu styles */
+.cms .cms-menu {
+    background-color: #1a3e88;
+    color: currentColor;
+}
+
+.cms .cms-menu__list li a {
+    color: currentColor;
+}
+
+.cms .cms-menu__list li a:hover {
+    background-color: inherit;
+    color: currentColor;
+}
+
+.cms .cms-menu__list li.cms-menu-item.active a {
+    background-color: #173778;
+    color: currentColor;
+}
+
+/* Header styles */
+.cms .cms-header {
+    background-color: #333;
+    color: #fff;
+}
+
+/* Button styles */
+.cms .btn-primary {
+    background-color: #FFC107;
+    border-color: #FFC107;
+}
+
+/* .cms .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+} */

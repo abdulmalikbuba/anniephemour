@@ -16,14 +16,18 @@
 
     <div class="container my-5">
         <% if $Photos %>
-            <div class="photo-gallery">
+            <div class="gallery">
+                <div class="row">
                 <% loop $Photos %>
-                    <div class="photo-item">
-                        $Photo.CMSThumbnail
-                        <h3>$Title</h3>
-                        <p>$Description</p>
+                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+                        <div class="gallery-image wow zoomIn">
+                            <a href="$Photo.URL" data-lightbox="gallery">
+                                <img src="$Photo.URL" alt="gallery{$ID}">
+                            </a>
+                        </div>
                     </div>
                 <% end_loop %>
+                </div>
             </div>
         <% else %>
             <p>No photos available.</p>

@@ -31,6 +31,10 @@
             </div>
         <% end_loop %>
         </div>
+
+        <% with $BookReadingEvents %>
+            <% include Pagination %>    
+        <% end_with %>
     </div>
 
 

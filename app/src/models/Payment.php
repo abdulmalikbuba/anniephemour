@@ -7,8 +7,7 @@ class Payment extends DataObject
 {
     private static $db = [
         'Amount' => 'Currency',
-        'Status' => 'Enum(array("Pending", "Completed", "Failed"), "Pending")',
-        'TransactionReference' => 'Varchar(255)'
+        'Status' => 'Enum(array("Pending", "Paid", "Failed"))'
     ];
 
     private static $has_one = [
@@ -20,7 +19,6 @@ class Payment extends DataObject
         'Amount' => 'Amount',
         'Status' => 'Status',
         'Created' => 'Date',
-        'TransactionReference' => 'Transaction Reference'
     ];
 
     private static $default_sort = 'Created DESC';

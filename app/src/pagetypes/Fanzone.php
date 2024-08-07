@@ -9,7 +9,7 @@ use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
 class Fanzone extends Page
 {
     private static $has_many = [
-        'Photos' => Photo::class
+        'Photos' => FanzonePhotos::class
     ];
 
     public function getCMSFields() {
