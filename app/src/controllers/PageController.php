@@ -35,7 +35,7 @@ namespace {
          *
          * @var array
          */
-        private static $allowed_actions = ['login', 'doSignup', 'logout'];
+        private static $allowed_actions = ['login', 'doSignup', 'logout', 'subscribe'];
 
         protected function init()
         {
@@ -203,6 +203,29 @@ namespace {
 
             return 0; // Return 0 if no cart or no user logged in
         }
+
+        public function subscribe(HTTPRequest $request)
+        {
+            if (!$request->isPOST()) {
+                return $this->httpError(400, 'Bad Method Request');
+            }
+
+            $email = $request->postVar('Email');
+            
+            if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $this->setSessionMessage('Please enter a valid email address!', 'danger');
+                return $this->redirectBack();
+            }
+
+            // Example logic to save the email to a database
+            $subscription = NewsletterSubscription::create();
+            $subscription->Email = $email;
+            $subscription->write();
+
+            $this->setSessionMessage('Thank you for subscribing to our newsletter!', 'success');
+            return $this->redirectBack();
+        }
+
 
 
 

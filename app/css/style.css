@@ -683,12 +683,14 @@ a {
 }
 
 #MemberLoginForm_LoginForm_action_doLogin,
-#ChangePasswordForm_ChangePasswordForm_action_doChangePassword{
+#ChangePasswordForm_ChangePasswordForm_action_doChangePassword,
+#MemberLoginForm_LoginForm_action_logout{
     background-color: #FFC107;
     color: black;
     padding: 10px 25px;
     border: none;
     margin-top: 10px;
+    font-weight: 500;
 }
 
 #MemberLoginForm_LoginForm_Remember_Holder{
@@ -716,4 +718,20 @@ a {
 .pagination{
     /* border: 1px solid #FFC107; */
     border-radius: 0px !important;
+}
+
+.acc-side-bar .flex-column .nav-link{
+    font-size: 15px !important;
+}
+
+.acc-side-bar .email{
+    color: grey;
+    font-size: 14px;
+}
+
+#myTabs .nav-link{
+    font-size: 14px !important;
+}
+.acc-dropd{
+    display: none;
 }

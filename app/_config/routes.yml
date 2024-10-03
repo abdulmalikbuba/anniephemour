@@ -8,3 +8,4 @@ SilverStripe\Control\Director:
     'cart/viewCart': 'CartController/viewCart'
     'cart/add': 'CartController/add'
     'cart/remove': 'CartController/remove'
+    'account' : 'AccountController'

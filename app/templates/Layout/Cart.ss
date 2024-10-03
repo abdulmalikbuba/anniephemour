@@ -2,97 +2,93 @@
 <div class="book-page">
 
     <div class="banner">
-    <div class="overlay">
-        <div class="wrapper">
-        <h2 class="wow zoomIn">Your Shopping Cart</h2>
-        <%-- <a href="$BaseHref" class="wow fadeInUp">Back To Home</a> --%>
+        <div class="overlay">
+            <div class="wrapper">
+                <h2 class="wow zoomIn">Your Shopping Cart</h2>
+                <%-- <a href="$BaseHref" class="wow fadeInUp">Back To Home</a> --%>
+            </div>
         </div>
-    </div>
     </div>
 
     <div class="container my-5">
-    <!-- table -->
-      <table class="table cart-table table-hover caption-top">
-      <caption>My Cart</caption>
-        <thead>
-          <tr>
-            <th scope="col" class="text-center">#</th>
-            <th scope="col">Book Title</th>
-            <th scope="col">Price</th>
-            <th scope="col" class="text-center">Quantity</th>
-            <th scope="col" class="text-center">Total Amount</th>
-            <th scope="col" class="text-center">Action</th>
-          </tr>
-        </thead>
-        <tbody class="table-group-divider">
-        <% if $Cart.CartItems %>
-        <% loop $Cart.CartItems %>
-          <tr>
-            <td class="text-center"><img src="$Book.BookImage.URL" alt=""></td>
-            <td>$Book.Title</td>
-            <td>GHC $Book.Price</td>
-            <td class="text-center">
-              <form action="cart/updateQuantity" method="post" class="quantity-form">
-                  <input type="hidden" name="CartItemID" value="$ID">
-                  <div class="input-group">
-                      <button type="button" class="btn btn-outline-secondary decrement-btn">-</button>
-                      <input type="number" name="Quantity" value="$Quantity" min="1" max="10" class="form-control quantity-input">
-                      <button type="button" class="btn btn-outline-secondary increment-btn">+</button>
-                  </div>
-              </form>
-          </td>
+        <!-- table -->
+        <table class="table cart-table table-hover caption-top">
+            <caption>My Cart</caption>
+            <thead>
+                <tr>
+                    <th scope="col" class="text-center">#</th>
+                    <th scope="col">Book Title</th>
+                    <th scope="col">Price</th>
+                    <th scope="col" class="text-center">Quantity</th>
+                    <th scope="col" class="text-center">Total Amount</th>
+                    <th scope="col" class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                <% if $Cart.CartItems %>
+                    <% loop $Cart.CartItems %>
+                        <tr>
+                            <td class="text-center"><img src="$Book.BookImage.URL" alt=""></td>
+                            <td>$Book.Title</td>
+                            <td>GHC $Book.Price</td>
+                            <td class="text-center">
+                                <form action="cart/updateQuantity" method="post" class="quantity-form">
+                                    <input type="hidden" name="CartItemID" value="$ID">
+                                    <div class="input-group">
+                                        <button type="button" class="btn btn-outline-secondary decrement-btn">-</button>
+                                        <input type="number" name="Quantity" value="$Quantity" min="1" max="10" class="form-control quantity-input">
+                                        <button type="button" class="btn btn-outline-secondary increment-btn">+</button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-center">$TotalPrice</td>
+                            <td class="text-center">
+                                <button type="button" class="btn remove-btn" data-bs-toggle="modal" data-bs-target="#confirmationModal-$ID">
+                                    <i class="bi fs-4 text-danger bi-x-square"></i>
+                                </button>
 
+                                <!-- Modal -->
+                                <div class="modal fade" id="confirmationModal-$ID" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Confirm Removal</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to remove this item from your cart?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <form id="removeFromCartForm" action="cart/removeFromCart" method="post">
+                                                    <input type="hidden" name="CartItemID" value="$ID">
+                                                    <button type="submit" class="btn btn-danger">Remove</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    <% end_loop %>
+                    <tr>
+                        <td colspan="5" class="">Total</td>
+                        <td class="text-center">GHC $Cart.Total</td>
+                    </tr>
+                <% else %>
+                    <tr>
+                        <td colspan="6" class="text-center">No items in cart!</td>
+                    </tr>
+                <% end_if %>
+            </tbody>
+        </table>
 
-            <td class="text-center">$TotalPrice</td>
-            <td class="text-center">
-              <button type="button" class="btn remove-btn" data-bs-toggle="modal" data-bs-target="#confirmationModal-$ID">
-                <i class="bi fs-4 text-danger bi-x-square"></i>
-              </button>
-
-              <!-- Modal -->
-              <div class="modal fade" id="confirmationModal-$ID" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-centered">
-                      <div class="modal-content">
-                          <div class="modal-header">
-                              <h5 class="modal-title" id="exampleModalLabel">Confirm Removal</h5>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                          </div>
-                          <div class="modal-body">
-                              Are you sure you want to remove this item from your cart?
-                          </div>
-                          <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                              <form id="removeFromCartForm" action="cart/removeFromCart" method="post">
-                                  <input type="hidden" name="CartItemID" value="$ID">
-                                  <button type="submit" class="btn btn-danger">Remove</button>
-                              </form>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-            </td>
-          </tr>
-        <% end_loop %>
-          <tr>
-            <td colspan="5" class="">Total</td>
-            <td class="text-center">GHC $Cart.Total</td>
-          </tr>
-          <% else %>
-          <tr>
-            <td colspan="6" class="text-center">No items in cart!</td>
-          </tr>
-          <% end_if %>
-        </tbody>
-      </table>
-
-      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-        <a href="books" class="btn btn-outline-secondary me-md-2">Continue Shopping</a>
-        <% if $Cart.CartItems %>
-            <a href="cart/purchase" class="btn btn-warning">Proceed To Payment</a>
-            <%-- <button class="btn btn-warning proceed-to-payment-btn">Proceed To Payment</button> --%>
-        <% end_if %>
-      </div>
-
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a href="books" class="btn btn-outline-secondary me-md-2">Continue Shopping</a>
+            <% if $Cart.CartItems %>
+                <button type="button" class="btn btn-warning payBtn" onclick="initiatePayment()">Proceed To Payment</button>
+            <% end_if %>
+        </div>
     </div>
 </div>
 <!-- book page -->
@@ -156,5 +152,40 @@
                 // Handle error: show a message, revert input value, etc.
             });
         }
+
+        function initiatePayment() {
+            fetch('cart/purchase', {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => {
+                payWithPaystack(data.PublicKey, data.Email, data.Amount, data.Reference, data.CallbackUrl);
+            })
+            .catch(error => {
+                console.error('Error initiating payment', error);
+                alert('Error initiating payment. Please try again.');
+            });
+        }
+
+        function payWithPaystack(publicKey, email, amount, reference, callbackUrl) {
+            var handler = PaystackPop.setup({
+                key: publicKey,
+                email: email,
+                amount: amount,
+                currency: 'GHS',
+                ref: reference,
+                channels: ['card', 'bank', 'ussd', 'qr', 'mobile_money', 'bank_transfer'],
+                callback: function(response) {
+                    window.location.href = callbackUrl + '?reference=' + response.reference;
+                },
+                onClose: function() {
+                    alert('Transaction was not completed, window closed.');
+                }
+            });
+            handler.openIframe();
+        }
+
+        // Attach initiatePayment function to the Proceed to Payment button
+        document.querySelector('.payBtn').addEventListener('click', initiatePayment);
     });
 </script>

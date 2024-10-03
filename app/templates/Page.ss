@@ -5,7 +5,9 @@
     $MetaTags(false)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="$resourceURL('app/images/bookfavicon.png')">
     <title>$SiteConfig.Title | <% if $MetaTitle %>$MetaTitle<% else %>$Title<% end_if %></title>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
 </head>
 <body>
     <% include Header %>
@@ -15,9 +17,9 @@
 
     <!-- Login Modal -->
     <div class="modal fade" id="login" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-warning-subtle">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Sign In</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -25,6 +27,8 @@
                     <% if $CurrentUser %>
                         <div class="text-center">
                             <p class="">You're logged in as $CurrentUser.FirstName $CurrentUser.Surname</p>
+                            <a href="account" class="">View Profile</a>
+                            <hr>
                             <p class="">Do you wish to logout?</p>
                             <a href="$Link('logout')" class="btn btn-secondary">Logout</a>
                         </div>
@@ -47,13 +51,13 @@
                         </form>
                     
 
-                    <div class="login-option text-center">
+                    <%-- <div class="login-option text-center">
                         <p>Or</p>
                         <div class="d-grid gap-2 col-10 mx-auto">
                             <a href="$Link('GoogleAuthController/login')" class="btn btn-outline-secondary"><i class="bi bi-google me-2"></i>Continue with Google</a>
                             <a href="#!" class="btn btn-primary"><i class="bi bi-facebook me-2"></i>Continue with Facebook</a>
                         </div>
-                    </div>
+                    </div> --%>
 
                     <div class="sign-up text-center pt-3">
                         <p>Don't have an account?</p>
@@ -68,7 +72,7 @@
     <div class="modal fade" id="signup" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-warning-subtle">
                     <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">Sign Up</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -124,6 +128,28 @@
                     toast.hide();
                 }, 5000);
             });
+
+            function payWithPaystack() {
+                var handler = PaystackPop.setup({
+                    key: '$PublicKey',
+                    email: document.getElementById('email').value,
+                    amount: document.getElementById('amount').value,
+                    currency: 'GHS',
+                    ref: document.getElementById('reference').value,
+                    channels: ['card', 'bank', 'ussd', 'qr', 'mobile_money', 'bank_transfer'],
+                    callback: function(response) {
+                        window.location.href = '$CallbackUrl?reference=' + response.reference;
+                    },
+                    onClose: function() {
+                        alert('Transaction was not completed, window closed.');
+                    }
+                });
+                handler.openIframe();
+            }
+
+            // Attach payWithPaystack function to the Pay Now button in the modal
+            document.querySelector('#paymentForm button').addEventListener('click', payWithPaystack);
+
         });
     </script>
 </body>

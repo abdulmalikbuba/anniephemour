@@ -24,9 +24,10 @@ class Order extends DataObject
         'ID' => 'Order ID',
         'Member.FirstName' => 'Customer First Name',
         'Member.Surname' => 'Customer Surname',
-        'Member.PhoneNumber' => 'Customer Phone Number',
+        // 'Member.PhoneNumber' => 'Customer Phone Number',
+        'Status' => 'Order Status',
         'TotalPrice' => 'Total Price',
-        'Status' => 'Status',
+        'Payment.Status' => 'Payment Status',
         'Created' => 'Order Date'
     ];
 

@@ -14,9 +14,9 @@
     </div>
     </div>
 
-    <div class="container mt-5">
+    <div class="container my-5">
         <div class="row">
-        <% loop $BookReadingEvents %>
+        <%-- <% loop $BookReadingEvents %>
             <div class="col-lg-4 col-md-6 col-sm-12">
                 <div class="book-club-card wow fadeInUp">
                     <% if $Flyer %>
@@ -29,7 +29,10 @@
                     </div>
                   </div>
             </div>
-        <% end_loop %>
+        <% end_loop %> --%>
+        <div class="alert alert-warning text-center" role="alert">
+            Sorry.. No book clubs available yet!
+        </div>
         </div>
 
         <% with $BookReadingEvents %>

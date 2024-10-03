@@ -4,13 +4,13 @@
             <div class="brand">Annie Phemour</div>
             <div class="breif">
                 <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo ullam aliquam sapiente, iusto perspiciatis dolorem sit exercitationem, voluptate ea aut officiis laboriosam sunt voluptatum impedit fugit animi! Labore, ab qui?</p> -->
-                <form action="#!" method="post" class="mb-3">
+                <form action="$Link('subscribe')" method="post" class="mb-3">
                     <h5>Subscribe to our newsletter</h5>
                     <p>Monthly digest of what's new and exciting from us.</p>
                     <div class="d-flex flex-column flex-sm-row w-100 gap-2">
                       <label for="newsletter1" class="visually-hidden">Email address</label>
-                      <input id="newsletter1" type="text" class="form-control" placeholder="Email address">
-                      <button class="btn btn-primary" type="button">Subscribe</button>
+                      <input id="newsletter1" name="Email" type="text" class="form-control" placeholder="Email address">
+                      <button class="btn btn-primary" type="submit">Subscribe</button>
                     </div>
                 </form>
             </div>

@@ -32,16 +32,16 @@ class Payment extends DataObject
 
     public function canCreate($member = null, $context = [])
     {
-        return true;
+        return false;
     }
 
     public function canEdit($member = null)
     {
-        return true;
+        return false;
     }
 
     public function canDelete($member = null)
     {
-        return true;
+        return false;
     }
 }

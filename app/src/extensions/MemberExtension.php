@@ -6,6 +6,7 @@ class MemberExtension extends DataExtension
 {
     private static $db = [
         'PhoneNumber' => 'Varchar',
+        'Address' => 'Varchar(255)'
     ];
 
 }

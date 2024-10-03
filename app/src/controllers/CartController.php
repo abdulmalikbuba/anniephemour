@@ -22,6 +22,20 @@ class CartController extends PageController
         'callback'
     ];
 
+    protected function init()
+    {
+        parent::init();
+        // You can include any CSS or JS required by your project here.
+        // See: https://docs.silverstripe.org/en/developer_guides/templates/requirements/
+
+        Requirements::javascript('https://js.paystack.co/v1/inline.js');
+
+        Requirements::customScript(<<<JS
+            
+        JS);
+    }
+
+
 
     public function Link($action = null)
     {
@@ -184,6 +198,176 @@ class CartController extends PageController
     }
 
     
+    // public function purchase()
+    // {
+    //     $member = Security::getCurrentUser();
+    //     if (!$member) {
+    //         $this->setSessionMessage('You must be logged in to purchase items!', 'danger');
+    //         return $this->redirectBack();
+    //     }
+
+    //     $cart = $this->getCart();
+    //     if (!$cart || !$cart->CartItems()->exists()) {
+    //         $this->setSessionMessage('Your cart is empty!', 'danger');
+    //         return $this->redirectBack();
+    //     }
+
+    //     $order = Order::create([
+    //         'MemberID' => $member->ID,
+    //         'TotalPrice' => $cart->Total,
+    //         'Status' => 'Pending'
+    //     ]);
+    //     $order->write();
+
+    //     foreach ($cart->CartItems() as $cartItem) {
+    //         $orderItem = OrderItem::create([
+    //             'OrderID' => $order->ID,
+    //             'BookID' => $cartItem->BookID,
+    //             'Quantity' => $cartItem->Quantity,
+    //             'TotalPrice' => $cartItem->TotalPrice
+    //         ]);
+    //         $orderItem->write();
+    //     }
+
+    //     $payment = Payment::create([
+    //         'Amount' => $order->TotalPrice,
+    //         'Status' => 'Pending',
+    //         'OrderID' => $order->ID,
+    //         'MemberID' => $member->ID
+    //     ]);
+
+    //     $payment->write();
+
+    //     // Redirect to Paystack payment page
+    //     return $this->redirect($this->Link('pay/' . $payment->ID));
+    // }
+
+    // public function purchase()
+    // {
+    //     $member = Security::getCurrentUser();
+    //     if (!$member) {
+    //         $this->setSessionMessage('You must be logged in to purchase items!', 'danger');
+    //         return $this->redirectBack();
+    //     }
+
+    //     $cart = $this->getCart();
+    //     if (!$cart || !$cart->CartItems()->exists()) {
+    //         $this->setSessionMessage('Your cart is empty!', 'danger');
+    //         return $this->redirectBack();
+    //     }
+
+    //     $order = Order::create([
+    //         'MemberID' => $member->ID,
+    //         'TotalPrice' => $cart->Total,
+    //         'Status' => 'Pending'
+    //     ]);
+    //     $order->write();
+
+    //     foreach ($cart->CartItems() as $cartItem) {
+    //         $orderItem = OrderItem::create([
+    //             'OrderID' => $order->ID,
+    //             'BookID' => $cartItem->BookID,
+    //             'Quantity' => $cartItem->Quantity,
+    //             'TotalPrice' => $cartItem->TotalPrice
+    //         ]);
+    //         $orderItem->write();
+    //     }
+
+    //     $payment = Payment::create([
+    //         'Amount' => $order->TotalPrice,
+    //         'Status' => 'Pending',
+    //         'OrderID' => $order->ID,
+    //         'MemberID' => $member->ID
+    //     ]);
+    //     $payment->write();
+
+    //     return $this->customise([
+    //         'PublicKey' => Config::inst()->get('Paystack', 'public_key'),
+    //         'Email' => $member->Email,
+    //         'Amount' => $payment->Amount * 100, // Convert to kobo
+    //         'Reference' => $payment->ID,
+    //         'CallbackUrl' => $this->Link('callback')
+    //     ]);
+    // }
+
+
+    // public function pay($request)
+    // {
+    //     $paymentID = $request->param('ID');
+    //     $payment = Payment::get()->byID($paymentID);
+
+    //     if (!$payment) {
+    //         $this->setSessionMessage('Payment not found!', 'danger');
+    //         return $this->redirectBack();
+    //     }
+
+    //     $publicKey = Config::inst()->get('Paystack', 'public_key');
+    //     $callbackUrl = $this->Link('callback');
+    //     $amount = $payment->Amount * 100; // Convert to kobo
+    //     $email = Security::getCurrentUser()->Email;
+
+    //     return $this->customise([
+    //         'PublicKey' => $publicKey,
+    //         'CallbackUrl' => $callbackUrl,
+    //         'Amount' => $amount,
+    //         'Email' => $email,
+    //         'Reference' => $payment->ID
+    //     ])->renderWith('PaystackPayment');
+    // }
+
+    // public function callback(HTTPRequest $request)
+    // {
+    //     $reference = $request->getVar('reference');
+    //     $payment = Payment::get()->byID($reference);
+
+    //     if (!$payment) {
+    //         $this->setSessionMessage('Payment not found!', 'danger');
+    //         return $this->redirect('https://attendantgh.com/cart');
+    //     }
+
+    //     $secretKey = Config::inst()->get('Paystack', 'secret_key');
+    //     $client = new Client();
+
+    //     try {
+    //         $response = $client->request('GET', "https://api.paystack.co/transaction/verify/{$reference}", [
+    //             'headers' => [
+    //                 'Authorization' => "Bearer $secretKey"
+    //             ],
+    //             'verify' => true // Optional, for SSL certificate verification
+    //         ]);
+
+    //         $result = json_decode($response->getBody());
+
+    //         if ($result->status && $result->data->status == 'success') {
+    //             // Payment was successful, update the payment and order status
+    //             $payment->Status = 'Paid';
+    //             $payment->write();
+
+    //             $order = $payment->Order();
+    //             if ($order) {
+    //                 $order->Status = 'Pending';
+    //                 $order->write();
+    //             }
+
+    //             // Clear the cart after successful payment
+    //             $cart = $this->getCart();
+    //             if ($cart && $cart->CartItems()->exists()) {
+    //                 $cart->CartItems()->removeAll();
+    //                 $cart->delete();
+    //             }
+
+    //             $this->setSessionMessage('Payment successful!', 'success');
+    //             return $this->redirect('https://attendantgh.com/cart');
+    //         } else {
+    //             $this->setSessionMessage('Payment failed: ' . $result->data->gateway_response, 'danger');
+    //             return $this->redirect('https://attendantgh.com/cart');
+    //         }
+    //     } catch (RequestException $e) {
+    //         $this->setSessionMessage('Payment failed: ' . $e->getMessage(), 'danger');
+    //         return $this->redirect('https://attendantgh.com/cart');
+    //     }
+    // }
+
     public function purchase()
     {
         $member = Security::getCurrentUser();
@@ -221,11 +405,18 @@ class CartController extends PageController
             'OrderID' => $order->ID,
             'MemberID' => $member->ID
         ]);
-
         $payment->write();
 
-        // Redirect to Paystack payment page
-        return $this->redirect($this->Link('pay/' . $payment->ID));
+        // Payment initiation logic, no rendering
+        $responseData = [
+            'PublicKey' => Config::inst()->get('Paystack', 'public_key'),
+            'Email' => $member->Email,
+            'Amount' => $payment->Amount * 100, // Convert to kobo
+            'Reference' => $payment->ID,
+            'CallbackUrl' => $this->Link('callback')
+        ];
+
+        return json_encode($responseData);
     }
 
     public function pay($request)
@@ -243,71 +434,17 @@ class CartController extends PageController
         $amount = $payment->Amount * 100; // Convert to kobo
         $email = Security::getCurrentUser()->Email;
 
-        return $this->customise([
+        // Payment initiation logic, no rendering
+        $responseData = [
             'PublicKey' => $publicKey,
             'CallbackUrl' => $callbackUrl,
             'Amount' => $amount,
             'Email' => $email,
             'Reference' => $payment->ID
-        ])->renderWith('PaystackPayment');
+        ];
+
+        return json_encode($responseData);
     }
-
-    // public function callback(HTTPRequest $request)
-    // {
-    //     $reference = $request->getVar('reference');
-    //     $payment = Payment::get()->byID($reference);
-
-    //     if (!$payment) {
-    //         $this->setSessionMessage('Payment not found!', 'danger');
-    //         return $this->redirect('http://localhost/book/');
-    //     }
-
-    //     $secretKey = Config::inst()->get('Paystack', 'secret_key');
-
-    //     $ch = curl_init();
-    //     curl_setopt($ch, CURLOPT_URL, "https://api.paystack.co/transaction/verify/{$reference}");
-    //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    //     curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    //         "Authorization: Bearer $secretKey"
-    //     ]);
-    //     $response = curl_exec($ch);
-    //     $error = curl_error($ch); // Capture cURL errors
-    //     curl_close($ch);
-
-    //     if ($error) {
-    //         // Log or display cURL error
-    //         $this->setSessionMessage('cURL error: ' . $error, 'danger');
-    //         return $this->redirect('http://localhost/book/');
-    //     }
-
-    //     $result = json_decode($response);
-
-    //     if (isset($result->status) && $result->status && isset($result->data->status) && $result->data->status == 'success') {
-    //         // Payment was successful, update the payment and order status
-    //         $payment->Status = 'Paid';
-    //         $payment->write();
-
-    //         $order = $payment->Order();
-    //         if ($order) {
-    //             $order->Status = 'Paid';
-    //             $order->write();
-    //         }
-
-    //         // Clear the cart after successful payment
-    //         $cart = $this->getCart();
-    //         if ($cart && $cart->CartItems()->exists()) {
-    //             $cart->CartItems()->removeAll();
-    //             $cart->delete();
-    //         }
-
-    //         $this->setSessionMessage('Payment successful!', 'success');
-    //         return $this->redirect('http://localhost/book/');
-    //     } else {
-    //         // Log the full response to debug the issue
-    //         $this->setSessionMessage('Payment failed: ' . json_encode($result), 'danger');
-    //         return $this->redirect('http://localhost/book/');
-    //     }
-    // }
 
     public function callback(HTTPRequest $request)
     {
@@ -316,7 +453,7 @@ class CartController extends PageController
 
         if (!$payment) {
             $this->setSessionMessage('Payment not found!', 'danger');
-            return $this->redirect('http://localhost/book/');
+            return $this->redirect('https://attendantgh.com/cart');
         }
 
         $secretKey = Config::inst()->get('Paystack', 'secret_key');
@@ -339,7 +476,7 @@ class CartController extends PageController
 
                 $order = $payment->Order();
                 if ($order) {
-                    $order->Status = 'Paid';
+                    $order->Status = 'Pending';
                     $order->write();
                 }
 
@@ -351,16 +488,19 @@ class CartController extends PageController
                 }
 
                 $this->setSessionMessage('Payment successful!', 'success');
-                return $this->redirect('http://localhost/book/');
             } else {
                 $this->setSessionMessage('Payment failed: ' . $result->data->gateway_response, 'danger');
-                return $this->redirect('http://localhost/book/');
             }
         } catch (RequestException $e) {
             $this->setSessionMessage('Payment failed: ' . $e->getMessage(), 'danger');
-            return $this->redirect('http://localhost/book/');
         }
+
+        return $this->redirect('https://attendantgh.com/cart');
     }
+
+
+    
+
 
 
     private function setSessionMessage($message, $type = 'success')

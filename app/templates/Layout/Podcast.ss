@@ -14,8 +14,8 @@
     </div>
     </div>
 
-    <div class="container">
-    <% loop $Episodes %>
+    <div class="container my-5">
+    <%-- <% loop $Episodes %>
     <div class="podcast-episode">
         <h3>$Title</h3>
         <p>$ReleaseDate.Nice</p>
@@ -25,7 +25,10 @@
             Your browser does not support the audio element.
         </audio>
     </div>
-    <% end_loop %>
+    <% end_loop %> --%>
+    <div class="alert alert-warning text-center" role="alert">
+            Sorry.. No podcasts available yet!
+    </div>
     </div>
 
 </div>
